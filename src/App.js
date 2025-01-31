@@ -7,7 +7,11 @@ import UserProfile from './components/userProfile';
 import UserPortfolio from './components/userPortfolio';
 import MarketCapital from './components/marketCapital';
 import UpdateProfile from './components/updateProfile';
-
+import TradingView from './components/tradingView';
+import ScreenerMain from './components/screenerMain';
+import TradeCalendar from './components/tradeCalendar';
+import BuySellStock from './components/buyAndSellStock';
+import Bitcoin from './components/Bitcoin';
 
 import React from 'react';
 import { BrowserRouter as Router,Routes,Route } from 'react-router-dom';
@@ -25,6 +29,11 @@ function App() {
           <Route path='/portfolio' element={<UserPortfolio/>}/>
           <Route path='/market' element={<MarketCapital/>}/>
           <Route path='/update' element={<UpdateProfile/>}/>
+          <Route path='/tradedash' element={<TradingView/>}/>
+          <Route path='/screener' element={<ScreenerMain/>}/>
+          <Route path='/calendar' element={<TradeCalendar/>}/>
+          <Route path='/buyandsell' element={<BuySellStock/>}/>
+          <Route path="/bitcoin/:coinCode" element={<Bitcoin />} />
           
           
           

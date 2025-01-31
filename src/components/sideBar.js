@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, Wallet, Coins, ScrollText, PieChart, BarChart3 } from 'lucide-react'
+import { LayoutDashboard, Wallet, Coins, ScrollText, PieChart, BarChart3,TrendingUp, LineChart, Calendar,DollarSign } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 const userData = {
   name: "Deepali khurana",
@@ -15,6 +15,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
     { icon: ScrollText, label: 'Transactions', href: '/transactions' },
     { icon: PieChart, label: 'Portfolio', href: '/portfolio' },
     { icon: BarChart3, label: 'Market Capital', href: '/market' },
+    { icon: TrendingUp, label: 'Trading View', href: '/tradedash' },
+    { icon: LineChart, label: 'Screener', href: '/screener' },
+    { icon: Calendar, label: 'Trading Calendar', href:'/calendar' },
+    { icon: DollarSign, label: 'Buy & Sell Stock', href: '/buyandsell' },
+      
   ]
   const { name, email, isCollapse,profileImage } = userData;
    const navigate = useNavigate();

@@ -51,7 +51,7 @@ export default function ManageTransactions() {
     <div className="p-6 dark:bg-black dark:text-white text-black bg-white min-h-screen">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold ">Manage Transaction</h1>
+        <h1 className="text-2xl font-semibold hover:font-bold hover:text-orange-500">Manage Transaction</h1>
         <div className="flex gap-4 dark:bg-black dark:text-white text-black bg-white">
           <input
             type="date"
