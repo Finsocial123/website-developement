@@ -40,7 +40,7 @@ const CryptoPrices = () => {
   };
 
   return (
-    <div className="dark:bg-black dark:text-white text-black bg-white p-6 min-h-screen border-solid border-[1px] border-blue-300 md:border-opacity-50 rounded-3xl border-2 border-teal-500/20 hover:scale-100 hover:border-teal-500/60 hover:z-10 transition-all duration-300 ease-in-out">
+    <div className="dark:bg-black dark:text-white text-black bg-white p-6 min-h-screen border-solid border-blue-300 md:border-opacity-50 rounded-3xl border-2 border-teal-500/20 hover:scale-100 hover:border-teal-500/60 hover:z-10 transition-all duration-300 ease-in-out">
       <h1 className="text-3xl font-bold mb-4 text-center">
         Today's Cryptocurrency Prices by Market Cap
       </h1>
