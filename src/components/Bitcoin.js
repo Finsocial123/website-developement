@@ -1,5 +1,6 @@
 import React from "react"
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, Bar, ComposedChart, Line } from "recharts"
+import { useEffect, useState } from "react";
 
 // Chart data
 const data = [
@@ -16,35 +17,46 @@ const data = [
   { date: "2025", open: 100000, close: 102695.98, high: 103000, low: 99000 },
 ]
 
-// News data
-const newsData = [
-  {
-    id: 1,
-    title: "Bitcoin ETF Approval Drives Market Surge",
-    time: "2 hours ago",
-    source: "CryptoNews",
-  },
-  {
-    id: 2,
-    title: "Bitcoin Mining Difficulty Hits New All-Time High",
-    time: "5 hours ago",
-    source: "BlockchainDaily",
-  },
-  {
-    id: 3,
-    title: "Major Bank Adds Bitcoin to Treasury Holdings",
-    time: "8 hours ago",
-    source: "CoinDesk",
-  },
-  {
-    id: 4,
-    title: "Bitcoin Lightning Network Capacity Reaches Record Level",
-    time: "12 hours ago",
-    source: "BitcoinMagazine",
-  },
-]
 
 function Bitcoin() {
+
+  const [newsData, setNewsData] = useState([]);
+  const [sentiment, setSentiment] = useState({
+    bullish: 0,
+    bearish: 0,
+  });
+
+  useEffect(() => {
+    fetch("http://saveai.tech/api/news/all", {
+      headers: {
+        'x-secret-code': 'finsocialdigitalsystemsscretcodes$$$!!!!@@#$$'
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const selectedNews = [];
+        ["crypto", "finance", "trading", "forex", "market_impact"].forEach((category) => {
+          if (data[category] && data[category].length > 0) {
+            selectedNews.push(data[category][0]);
+          }
+        });
+        setNewsData(selectedNews);
+      })
+      .catch((error) => console.error("Error fetching news data:", error));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://saveai.tech/api/crypto/vote/bitcoin", {
+      headers: {
+        'x-secret-code': 'finsocialdigitalsystemsscretcodes$$$!!!!@@#$$'
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setSentiment({ bullish: data.bullish_percentage, bearish: data.bearish_percentage });
+      })
+      .catch((error) => console.error("Error fetching sentiment data:", error));
+  }, []);
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -162,19 +174,19 @@ function Bitcoin() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span>Bullish</span>
-                  <span className="text-green-400">80%</span>
+                  <span className="text-green-400">{sentiment.bullish.toFixed(2)}%</span>
                 </div>
                 <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-400 w-[80%]"></div>
+                <div className="h-full bg-green-400" style={{ width: `${sentiment.bullish}%` }}></div>
                 </div>
               </div>
               <div>
                 <div className="flex justify-between mb-2">
                   <span>Bearish</span>
-                  <span className="text-red-400">20%</span>
+                  <span className="text-red-400">{sentiment.bearish.toFixed(2)}%</span>
                 </div>
                 <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-400 w-[20%]"></div>
+                <div className="h-full bg-red-400" style={{ width: `${sentiment.bearish}%` }}></div>
                 </div>
               </div>
             </div>
@@ -183,23 +195,13 @@ function Bitcoin() {
             <div className="mt-6 border-t border-gray-800 pt-6">
               <h4 className="text-lg font-semibold mb-4">Latest News</h4>
               <div className="space-y-4">
-                {newsData.map((news) => (
-                  <div key={news.id} className="group cursor-pointer">
-                    <h5 className="text-sm font-medium group-hover:text-blue-400 transition-colors">{news.title}</h5>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
-                      <span>{news.source}</span>
-                      <span>•</span>
-                      <span>{news.time}</span>
-                    </div>
-                  </div>
-                ))}
+              {newsData.map((news, index) => (
+                 <div key={index} className="group cursor-pointer">
+                   <h5 className="text-sm font-medium group-hover:text-blue-400 transition-colors">{news.title}</h5>
+                 </div>
+              ))}
               </div>
             </div>
-
-            {/* View More Button */}
-            <button className="mt-4 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-              View More News →
-            </button>
           </div>
         </div>
 
@@ -231,4 +233,4 @@ function Bitcoin() {
   )
 }
 
-export default Bitcoin;
+export default Bitcoin

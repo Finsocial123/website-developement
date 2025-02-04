@@ -14,10 +14,25 @@ const NewsInsights = () => {
 
   const fetchNews = async () => {
     const API_ENDPOINT = "http://saveai.tech/api/news/all";
+    const SECRET_CODE = process.env.REACT_APP_SECRET_KEY;
+
+    console.log("Secret Code:", SECRET_CODE);
+
+
+    console.log("Fetching news...");
+    console.log("API URL:", API_ENDPOINT);
+    console.log("Secret Key:", SECRET_CODE);
+
     setLoading(true);
 
     try {
-      const response = await fetch(API_ENDPOINT);
+      const response = await fetch(API_ENDPOINT, {
+        method: "GET",
+        headers: {
+          'x-secret-code': 'finsocialdigitalsystemsscretcodes$$$!!!!@@#$$',
+          "Content-Type": "application/json"
+        }
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -30,7 +45,7 @@ const NewsInsights = () => {
         crypto: data.crypto || [],
         finance: data.finance || [],
         trading: data.trading || [],
-        market_impact: data.market_impact || [],
+        marketImpact: data.market_impact || [], // Fixed key name
         forex: data.forex || [],
       });
     } catch (error) {
@@ -57,7 +72,6 @@ const NewsInsights = () => {
               key={index}
               className="bg-white shadow-md rounded-3xl overflow-hidden hover:shadow-lg transition transform hover:scale-105"
             >
-              {/* Upper Half: Image */}
               <div className="h-40 overflow-hidden">
                 {item.image ? (
                   <img
@@ -74,7 +88,6 @@ const NewsInsights = () => {
                 )}
               </div>
 
-              {/* Lower Half: Heading and Subheading */}
               <div className="p-5 dark:bg-black dark:text-white text-black bg-white border border-teal-500 rounded-3xl hover:scale-105">
                 <h3 className="text-lg font-semibold mb-2 line-clamp-2">
                   {item.title || "No Title Available"}
@@ -126,7 +139,6 @@ const NewsInsights = () => {
           {renderNewsCategory("Finance News", news.finance)}
           {renderNewsCategory("Trading News", news.trading)}
 
-          {/* Toggle Button for Other News */}
           <div className="text-center">
             <button
               className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
@@ -136,10 +148,9 @@ const NewsInsights = () => {
             </button>
           </div>
 
-          {/* Other News Categories */}
           {showOtherNews && (
             <>
-              {renderNewsCategory("Market Impact News", news.market_impact)}
+              {renderNewsCategory("Market Impact News", news.marketImpact)} 
               {renderNewsCategory("Forex News", news.forex)}
             </>
           )}

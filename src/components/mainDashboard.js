@@ -32,9 +32,9 @@ const MainDashboard = () => {
       </div>
 
       
-      <div className="flex p-4 space-x-9 w-[1296px] mx-auto">
+      <div className="flex p-4 space-x-9 w-[1296px] mx-auto flex-wrap ">
         
-        <div className="w-[370px] h-[100px] dark:bg-black dark:text-white text-black bg-white border-teal-500/20 border-2 rounded-lg flex hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out hover:scale-105">
+        <div className="w-[370px] h-[100px] sm:w-[150px] md:w-[270px] lg:w-[370px] dark:bg-black dark:text-white text-black bg-white border-teal-500/20 border-2 rounded-lg flex hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out hover:scale-105">
           <div>
             <img src={bitcoin} className="p-6" alt="Bitcoin Icon" />
           </div>
@@ -45,7 +45,7 @@ const MainDashboard = () => {
         </div>
 
         
-        <div className="w-[370px] h-[100px] dark:bg-black dark:text-white text-black bg-white border-teal-500/20 border-2 rounded-lg flex hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out hover:scale-105">
+        <div className="w-[370px] h-[100px] sm:w-[150px] md:w-[270px] lg:w-[370px] dark:bg-black dark:text-white text-black bg-white border-teal-500/20 border-2 rounded-lg flex hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out hover:scale-105">
           <div>
             <img src={dash} className="p-6" alt="Dash Icon" />
           </div>
@@ -56,7 +56,7 @@ const MainDashboard = () => {
         </div>
 
         
-        <div className="w-[370px] h-[100px] dark:bg-black dark:text-white text-black bg-white border-teal-500/20 border-2 rounded-lg flex hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out hover:scale-105">
+        <div className="w-[370px] h-[100px] sm:w-[150px] md:w-[270px] lg:w-[370px] dark:bg-black dark:text-white text-black bg-white border-teal-500/20 border-2 rounded-lg flex hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out hover:scale-105">
           <div>
             <img src={lite} className="p-6" alt="Litecoin Icon" />
           </div>
@@ -69,7 +69,7 @@ const MainDashboard = () => {
 
       
       <div className="p-4 flex space-x-10 w-[1296px] mx-auto">
-        <div>
+        <div >
           <Balance />
         </div>
         <div>

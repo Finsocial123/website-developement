@@ -18,7 +18,12 @@ const CryptoPrices = () => {
       setError(null);
       try {
         const response = await fetch(
-          "http://saveai.tech/api/coins/?page=1&items_per_page=100"
+          `http://saveai.tech/api/coins/?page=${currentPage}&items_per_page=100`,
+          {
+            headers:{
+              'x-secret-code': 'finsocialdigitalsystemsscretcodes$$$!!!!@@#$$'
+            }
+          }
         );
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);

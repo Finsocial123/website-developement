@@ -73,7 +73,7 @@ export default function CryptoPrices() {
   }, []);
 
   return (
-    <div className="w-[400px] dark:bg-black dark:text-white text-black bg-white border-2 border-teal-500/20 h-[580px] 
+    <div className="w-[400px] sm:w-[250px] md:w-[350px] lg:w-[400px] dark:bg-black dark:text-white text-black bg-white border-2 border-teal-500/20 h-[580px] 
       rounded-lg overflow-hidden hover:scale-105
       hover:shadow-2xl hover:border-teal-500/60 hover:border:z-10 group transition-all duration-300 ease-in-out ">
       {/* Header */}

@@ -138,7 +138,7 @@ export default function BalanceStatistics() {
   }, [])
 
   return (
-    <div className="w-[770px] p-6 rounded-lg  border-2 border-teal-500/20 hover:scale-105 
+    <div className="w-[770px]  md:w-[500px] lg:w-[770px] sm:w-[300px] p-6 rounded-lg  border-2 border-teal-500/20 hover:scale-105 
     hover:shadow-2xl hover:border-teal-500/60 hover:border:z-10 group transition-all duration-300 ease-in-out  ">
       <div className="h-[530px]">
         <canvas ref={chartRef} />
