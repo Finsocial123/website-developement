@@ -12,9 +12,12 @@ import dash from "../images/coin-dash.png";
 import lite from "../images/coin-lite.png";
 import Header from '../components/header'
 import Sidebar from '../components/sideBar'
+import { useLocation } from "react-router-dom";
 
 
 const MainDashboard = () => {
+  const location = useLocation();
+  const message = location.state?.message || "";
   
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   return (
@@ -28,6 +31,7 @@ const MainDashboard = () => {
       <div className="p-4 w-[1296px] mx-auto">
         <div className="text-white w-[200px] text-center text-2xl font-bold py-2 px-4 rounded-lg bg-gradient-to-r from-pink-500 to-orange-400">
           Dashboard
+          {message && <p>{message}</p>}
         </div>
       </div>
 

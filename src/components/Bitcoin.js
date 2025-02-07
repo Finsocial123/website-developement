@@ -2,23 +2,39 @@ import React from "react"
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, Bar, ComposedChart, Line } from "recharts"
 import { useEffect, useState } from "react";
 
-// Chart data
-const data = [
-  { date: "Mar", open: 52000, close: 55000, high: 56000, low: 51000 },
-  { date: "Apr", open: 55000, close: 58000, high: 59000, low: 54000 },
-  { date: "May", open: 58000, close: 62000, high: 63000, low: 57000 },
-  { date: "Jun", open: 62000, close: 68000, high: 69000, low: 61000 },
-  { date: "Jul", open: 68000, close: 75000, high: 76000, low: 67000 },
-  { date: "Aug", open: 75000, close: 82000, high: 83000, low: 74000 },
-  { date: "Sep", open: 82000, close: 88000, high: 89000, low: 81000 },
-  { date: "Oct", open: 88000, close: 92000, high: 93000, low: 87000 },
-  { date: "Nov", open: 92000, close: 97000, high: 98000, low: 91000 },
-  { date: "Dec", open: 97000, close: 100000, high: 101000, low: 96000 },
-  { date: "2025", open: 100000, close: 102695.98, high: 103000, low: 99000 },
-]
-
 
 function Bitcoin() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch monthly BTC price data from Binance
+  useEffect(() => {
+    const fetchBitcoinData = async () => {
+      try {
+        const response = await fetch(
+          "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1M&limit=12"
+        );
+        const result = await response.json();
+
+        // Format data to match Recharts format
+        const formattedData = result.map((entry) => ({
+          date: new Date(entry[0]).toLocaleString("default", { month: "short", year: "numeric" }),
+          open: parseFloat(entry[1]),
+          high: parseFloat(entry[2]),
+          low: parseFloat(entry[3]),
+          close: parseFloat(entry[4]),
+        }));
+
+        setData(formattedData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching Bitcoin data:", error);
+      }
+    };
+
+    fetchBitcoinData();
+  }, []);
+
 
   const [newsData, setNewsData] = useState([]);
   const [sentiment, setSentiment] = useState({
@@ -35,7 +51,7 @@ function Bitcoin() {
       .then((response) => response.json())
       .then((data) => {
         const selectedNews = [];
-        ["crypto", "finance", "trading", "forex", "market_impact"].forEach((category) => {
+        ["crypto", "finance", "trading", "market_impact"].forEach((category) => {
           if (data[category] && data[category].length > 0) {
             selectedNews.push(data[category][0]);
           }
@@ -123,47 +139,41 @@ function Bitcoin() {
         {/* Main Content Section with Chart and Community Sentiment */}
         <div className="flex gap-6 ">
           {/* Chart Section */}
-          <div
-            className="flex-1 bg-black rounded-3xl border-2 border-teal-500/20 hover:scale-10 
-                    hover:border-teal-500/60 hover:z-10 transition-all duration-300 ease-in-out"
-          >
-            <div className="flex justify-between items-center p-4">
-              <h3 className="text-xl font-bold">Price Chart</h3>
-              <div className="flex gap-2">
-                <button className="px-3 py-1 text-sm bg-[#2C2B35] rounded">1D</button>
-                <button className="px-3 py-1 text-sm bg-[#2C2B35] rounded">7D</button>
-                <button className="px-3 py-1 text-sm bg-[#2C2B35] rounded">1M</button>
-                <button className="px-3 py-1 text-sm bg-[#2C2B35] rounded">1Y</button>
-                <button className="px-3 py-1 text-sm bg-blue-600 rounded">ALL</button>
-              </div>
-            </div>
-            <div className="h-[400px] w-full p-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={data}>
-                  <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <Tooltip
-                    contentStyle={{ background: "#1C1B24", border: "1px solid #2C2B35" }}
-                    labelStyle={{ color: "#ffffff" }}
-                    formatter={(value, name) => [`$${value}`, name.charAt(0).toUpperCase() + name.slice(1)]}
-                  />
-                  <Bar dataKey="low" stackId="a" fill="transparent" />
-                  <Bar dataKey="open" stackId="a" fill="#F7931A" />
-                  <Bar dataKey="close" stackId="a" fill="#F7931A" />
-                  <Bar dataKey="high" stackId="a" fill="transparent" />
-                  <Line type="monotone" dataKey="low" stroke="#F7931A" dot={false} />
-                  <Line type="monotone" dataKey="high" stroke="#F7931A" dot={false} />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
+             <div className="flex-1 bg-black rounded-3xl border-2 border-teal-500/20 hover:scale-10 
+                             hover:border-teal-500/60 hover:z-10 transition-all duration-300 ease-in-out p-4">
+                 <div className="flex justify-between items-center py-8">
+                    <h3 className="text-2xl font-bold text-white">Price Chart</h3>
+                 </div>
+                     <div className="h-[400px] w-full p-4">
+                        {loading ? (
+                       <p className="text-white text-center">Loading data...</p>
+                          ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                     <ComposedChart data={data}>
+                          <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                          <YAxis
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value) => `$${value.toLocaleString()}`}
+                          />
+                         <Tooltip
+                         contentStyle={{ background: "#1C1B24", border: "1px solid #2C2B35" }}
+                         labelStyle={{ color: "#ffffff" }}
+                         formatter={(value, name) => [`$${value.toLocaleString()}`, name.toUpperCase()]}
+                        />
+                         <Bar dataKey="low" stackId="a" fill="transparent" />
+                         <Bar dataKey="open" stackId="a" fill="#F7931A" />
+                         <Bar dataKey="close" stackId="a" fill="#F7931A" />
+                         <Bar dataKey="high" stackId="a" fill="transparent" />
+                         <Line type="monotone" dataKey="low" stroke="#F7931A" dot={false} />
+                         <Line type="monotone" dataKey="high" stroke="#F7931A" dot={false} />
+                     </ComposedChart>
+                  </ResponsiveContainer>
+                        )}
+                      </div>
+             </div>
           {/* Community Sentiment Side Panel */}
           <div
             className="w-80 bg-black rounded-3xl border-2 border-teal-500/20 hover:scale-10 
@@ -193,15 +203,24 @@ function Bitcoin() {
 
             {/* News Section */}
             <div className="mt-6 border-t border-gray-800 pt-6">
-              <h4 className="text-lg font-semibold mb-4">Latest News</h4>
+                <h4 className="text-lg font-semibold mb-4">Latest News</h4>
               <div className="space-y-4">
-              {newsData.map((news, index) => (
-                 <div key={index} className="group cursor-pointer">
-                   <h5 className="text-sm font-medium group-hover:text-blue-400 transition-colors">{news.title}</h5>
-                 </div>
-              ))}
+                  {newsData.map((news, index) => (
+               <div
+                  key={index}
+                  className="group cursor-pointer flex gap-4 items-center"
+                  onClick={() => window.open(news.source, "_blank")}
+                >
+                  {news.image && (
+                  <img src={news.image} alt={news.title} className="w-16 h-16 rounded-full object-cover" />
+                  )}
+                  <h5 className="text-sm font-medium group-hover:text-blue-400 transition-colors">
+                  {news.title}
+                  </h5>
+               </div>
+                  ))}
               </div>
-            </div>
+           </div>
           </div>
         </div>
 

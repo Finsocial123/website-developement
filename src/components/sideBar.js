@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, Wallet, Coins, ScrollText, PieChart, BarChart3,TrendingUp, LineChart, Calendar,DollarSign } from 'lucide-react'
+import { LayoutDashboard, Wallet, Coins, ScrollText, PieChart, BarChart3,TrendingUp,LogOut, LineChart, Calendar,DollarSign, ChartCandlestick, ChartNoAxesCombined } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 const userData = {
   name: "Deepali khurana",
@@ -9,7 +9,7 @@ const userData = {
 };
 export default function Sidebar({ isCollapsed, setIsCollapsed }) {
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
     { icon: Wallet, label: 'My Wallet', href: '/wallet' },
     { icon: Coins, label: 'Coin Details', href: '/coins' },
     { icon: ScrollText, label: 'Transactions', href: '/transactions' },
@@ -19,6 +19,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
     { icon: LineChart, label: 'Screener', href: '/screener' },
     { icon: Calendar, label: 'Trading Calendar', href:'/calendar' },
     { icon: DollarSign, label: 'Buy & Sell Stock', href: '/buyandsell' },
+    { icon:ChartCandlestick , label: 'Trade', href: '/trade' },
+    { icon: ChartNoAxesCombined, label: 'Analytics', href: '/analytics' },
+    { icon:LogOut , label: 'Log Out', href: '/logout' },
       
   ]
   const { name, email, isCollapse,profileImage } = userData;

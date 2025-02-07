@@ -1,107 +1,426 @@
-import React, { useState } from "react";
-
-import Header from "./header";
-import Sidebar from "./sideBar";
 
 
-const TradeCalendar = () => {
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const events = [
-    // Mock data for events
-    { date: "Monday, January 20", time: "08:30", country: "United States", event: "Building Permits (Dec)", actual: "1.23M", forecast: "1.25M", prior: "1.27M" },
-    { date: "Monday, January 20", time: "09:00", country: "Eurozone", event: "ZEW Economic Sentiment Index (Jan)", actual: "48.5", forecast: "50.0", prior: "47.6" },
-    { date: "Tuesday, January 21", time: "13:00", country: "United States", event: "10-Year Note Auction", actual: "1.887%", forecast: "--", prior: "1.872%" },
-    { date: "Wednesday, January 22", time: "07:00", country: "United Kingdom", event: "Consumer Price Index (YoY) (Dec)", actual: "2.1%", forecast: "2.0%", prior: "1.8%" },
-    { date: "Wednesday, January 22", time: "10:00", country: "Germany", event: "IFO Business Climate Index (Jan)", actual: "95.9", forecast: "96.0", prior: "94.8" },
-    { date: "Thursday, January 23", time: "15:30", country: "Canada", event: "Retail Sales (MoM) (Nov)", actual: "0.3%", forecast: "0.5%", prior: "-0.1%" },
-    { date: "Friday, January 24", time: "09:30", country: "Australia", event: "Producer Price Index (QoQ) (Q4)", actual: "0.7%", forecast: "0.5%", prior: "0.4%" },
-    { date: "Friday, January 24", time: "11:00", country: "Japan", event: "BoJ Interest Rate Decision", actual: "-0.1%", forecast: "-0.1%", prior: "-0.1%" },
-    { date: "Saturday, January 25", event: "No scheduled reports" },
-    { date: "Sunday, January 26", event: "No scheduled reports" },
-  ];
+import { useState, createContext, useContext } from "react"
+
+// Event Context
+const EventContext = createContext()
+
+const useEvents = () => useContext(EventContext)
+
+// TradingCalendar Component
+export default function TradingCalendar() {
+  const [currentMonth, setCurrentMonth] = useState(new Date())
+  const [events, setEvents] = useState([
+    {
+      id: 1,
+      title: "GDP Report",
+      type: "economic",
+      date: "2025-02-03",
+      time: "08:30 AM",
+      impact: "high",
+      description: "Quarterly GDP growth rate report",
+      country: "US",
+    },
+    {
+      id: 2,
+      title: "Apple Earnings",
+      type: "earnings",
+      date: "2025-02-05",
+      time: "16:30 PM",
+      impact: "medium",
+      description: "Q4 2024 earnings report",
+      forecast: "$1.23 per share",
+    },
+    {
+      id: 3,
+      title: "Microsoft Revenue",
+      type: "revenue",
+      date: "2025-02-06",
+      time: "09:00 AM",
+      impact: "high",
+      description: "Annual revenue report",
+      forecast: "$62.5B",
+    },
+  ])
+
+  const addEvent = (newEvent) => {
+    setEvents((prevEvents) => [...prevEvents, { ...newEvent, id: Date.now() }])
+  }
+
+  const handleMonthChange = (newDate) => {
+    setCurrentMonth(newDate)
+  }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Header onMenuClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
-      <div className="flex">
-        <Sidebar isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
-        <main className="flex-1 p-4 dark:bg-black dark:text-white text-black bg-white">
-    <div className="flex flex-col min-h-screen p-6 space-y-6 w-[1080px] mx-auto">
-      {/* Header Section */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold  hover:text-2xl hover:text-orange-500">Economic Calendar</h1>
-        <div className="flex items-center gap-4">
-          <button className=" px-3 py-1 rounded-md ">Today</button>
-          <div className="flex items-center gap-2">
-            <button className="text-gray-500">&lt;</button>
-            <span className="text-white">Jan 13 — Jan 19, 2025</span>
-            <button className="text-gray-500">&gt;</button>
-          </div>
+    <EventContext.Provider value={{ events, addEvent }}>
+      <div className="min-h-screen dark:bg-black dark:text-white text-black bg-white">
+        <div className="max-w-7xl mx-auto p-4">
+          <CalendarHeader currentMonth={currentMonth} onMonthChange={handleMonthChange} />
+          <FilterButtons />
+          <Legend />
+          <CalendarGrid currentMonth={currentMonth} />
         </div>
       </div>
+    </EventContext.Provider>
+  )
+}
 
-      {/* Tabs Section */}
-      <div className="flex flex-wrap gap-4">
-        <button className="bg-gray-800 px-4 py-2 rounded-3xl text-white hover:bg-orange-500">Economic</button>
-        <button className="bg-gray-800 px-4 py-2 rounded-3xl text-white hover:bg-orange-500">Earnings</button>
-        <button className="bg-gray-800 px-4 py-2 rounded-3xl text-white hover:bg-orange-500">Revenue</button>
-        <button className="bg-gray-800 px-4 py-2 rounded-3xl text-white hover:bg-orange-500">Dividends</button>
+// CalendarHeader Component
+function CalendarHeader({ currentMonth, onMonthChange }) {
+  const formatMonth = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      year: "numeric",
+    }).format(date)
+  }
+
+  const navigateMonth = (direction) => {
+    const newDate = new Date(currentMonth)
+    newDate.setMonth(currentMonth.getMonth() + direction)
+    onMonthChange(newDate)
+  }
+
+  const goToToday = () => {
+    onMonthChange(new Date())
+  }
+
+  return (
+    <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sticky top-0 z-10 p-4 border-b-2 border-blue-500 rounded-3xl">
+      <h1 className="text-2xl font-bold">Trading Calendar</h1>
+      <div className="flex items-center gap-2 flex-wrap">
+        <button onClick={goToToday} className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+          Today
+        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigateMonth(-1)}
+            className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            &#9664;
+          </button>
+          <span className="text-sm whitespace-nowrap">{formatMonth(currentMonth)}</span>
+          <button
+            onClick={() => navigateMonth(1)}
+            className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            &#9654;
+          </button>
+        </div>
+        <CreateEventModal />
       </div>
+    </header>
+  )
+}
 
-      {/* Events Section */}
-      <div className=" rounded-md overflow-hidden">
-        {events.map((event, index) => (
-          <div key={index} className="border-b border-gray-700 last:border-0">
-            <div className="px-4 py-3  text-sm font-semibold ">
-              {event.date}
-            </div>
-            <div className="px-4 py-2">
-              {event.event === "No scheduled reports" ? (
-                <p className="">{event.event}</p>
-              ) : (
-                <div className="flex justify-between items-center ">
-                  <span className="text-sm">{event.time}</span>
-                  <span className="text-sm">{event.country}</span>
-                  <span className="text-sm">{event.event}</span>
-                  <span className="text-sm">{event.actual}</span>
-                  <span className="text-sm">{event.forecast}</span>
-                  <span className="text-sm">{event.prior}</span>
-                </div>
-              )}
-            </div>
+// FilterButtons Component
+function FilterButtons() {
+  const [activeFilter, setActiveFilter] = useState("economic")
+  const [timeZone, setTimeZone] = useState("UTC")
+
+  const filters = [
+    { id: "economic", label: "Economic" },
+    { id: "earnings", label: "Earnings" },
+    { id: "revenue", label: "Revenue" },
+    { id: "dividends", label: "Dividends" },
+  ]
+
+  const timeZones = [
+    { value: "UTC", label: "UTC" },
+    { value: "EST", label: "Eastern Time" },
+    { value: "PST", label: "Pacific Time" },
+    { value: "GMT", label: "GMT" },
+  ]
+
+  return (
+    <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 px-4">
+      <div className="flex flex-wrap gap-2">
+        {filters.map((filter) => (
+          <button
+            key={filter.id}
+            onClick={() => setActiveFilter(filter.id)}
+            className={`px-3 py-1 rounded-full ${
+              activeFilter === filter.id
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+            }`}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+      <select
+        value={timeZone}
+        onChange={(e) => setTimeZone(e.target.value)}
+        className="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded"
+      >
+        {timeZones.map((tz) => (
+          <option key={tz.value} value={tz.value}>
+            {tz.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
+// Legend Component
+function Legend() {
+  const impacts = [
+    { level: "High", color: "bg-red-500" },
+    { level: "Medium", color: "bg-yellow-500" },
+    { level: "Low", color: "bg-green-500" },
+  ]
+
+  return (
+    <div className="flex items-center gap-4 px-4 mb-6">
+      <span className="text-sm font-medium">Impact:</span>
+      <div className="flex gap-4">
+        {impacts.map(({ level, color }) => (
+          <div key={level} className="flex items-center gap-2">
+            <span className={`w-2 h-2 rounded-full ${color}`} />
+            <span className="text-sm">{level}</span>
           </div>
         ))}
       </div>
+    </div>
+  )
+}
 
-      {/* FAQ Section */}
-      <div>
-        <h2 className="text-xl font-bold  mb-4">How to use Economic Calendar</h2>
-        <p className=" mb-4">
-          Economic Calendar on TradingView shows the latest and upcoming economic
-          events that can affect certain assets, regions, and global markets —
-          for example, <span className=" ">stocks</span>,{" "}
-          <span className="">Forex</span>, or{" "}
-          <span className="">bonds</span>.
-        </p>
-        <h3 className="text-lg font-semibold  mb-2">Frequently Asked Questions</h3>
-        <div>
-          <div className="flex justify-between items-center  px-4 py-2 rounded-md mb-2 cursor-pointer">
-            <span className="">What is the Economic Calendar?</span>
-            <span className="">+</span>
-          </div>
-          <div className="flex justify-between items-center  px-4 py-2 rounded-md cursor-pointer">
-            <span className="text-white">
-              How many countries does the Economic Calendar provide events for?
-            </span>
-            <span className="">+</span>
-          </div>
+// CalendarGrid Component
+function CalendarGrid({ currentMonth }) {
+  const { events } = useEvents()
+
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+  const getImpactColor = (impact) => {
+    const colors = {
+      high: "bg-red-500",
+      medium: "bg-yellow-500",
+      low: "bg-green-500",
+    }
+    return colors[impact] || "bg-gray-500"
+  }
+
+  const getDaysInMonth = (year, month) => {
+    return new Date(year, month + 1, 0).getDate()
+  }
+
+  const getFirstDayOfMonth = (year, month) => {
+    return new Date(year, month, 1).getDay()
+  }
+
+  const year = currentMonth.getFullYear()
+  const month = currentMonth.getMonth()
+  const daysInMonth = getDaysInMonth(year, month)
+  const firstDayOfMonth = getFirstDayOfMonth(year, month)
+
+  const daysCells = []
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    daysCells.push(<div key={`empty-${i}`} className="bg-gray-100 dark:bg-gray-800"></div>)
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day)
+    const dateString = date.toISOString().split("T")[0]
+    const dayEvents = events.filter((event) => event.date === dateString)
+
+    daysCells.push(
+      <div
+        key={day}
+        className="min-h-[100px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2"
+      >
+        <div className="text-sm font-medium mb-1">{day}</div>
+        <div className="space-y-1">
+          {dayEvents.map((event) => (
+            <div key={event.id} className="relative group">
+              <div className="text-xs p-1 rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors">
+                <div className="flex items-center gap-1">
+                  <span className={`w-2 h-2 rounded-full ${getImpactColor(event.impact)}`} />
+                  <span className="font-medium truncate">{event.title}</span>
+                </div>
+              </div>
+              <div className="absolute z-10 invisible group-hover:visible bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg p-2 w-48">
+                <p className="font-medium">{event.title}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{event.time}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{event.description}</p>
+                {event.forecast && <p className="text-xs mt-1">Forecast: {event.forecast}</p>}
+                {event.country && <p className="text-xs mt-1">Country: {event.country}</p>}
+              </div>
+            </div>
+          ))}
         </div>
+      </div>,
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-7 gap-1">
+      {days.map((day) => (
+        <div key={day} className="text-center font-medium text-sm py-2 bg-gray-200 dark:bg-gray-700">
+          {day}
+        </div>
+      ))}
+      {daysCells}
+    </div>
+  )
+}
+
+// CreateEventModal Component
+function CreateEventModal() {
+  const [isOpen, setIsOpen] = useState(false)
+  const { addEvent } = useEvents()
+  const [eventData, setEventData] = useState({
+    title: "",
+    date: "",
+    time: "",
+    type: "",
+    impact: "",
+    description: "",
+  })
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setEventData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    addEvent(eventData)
+    setIsOpen(false)
+    setEventData({
+      title: "",
+      date: "",
+      time: "",
+      type: "",
+      impact: "",
+      description: "",
+    })
+  }
+
+  if (!isOpen)
+    return (
+      <button onClick={() => setIsOpen(true)} className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+        Create New
+      </button>
+    )
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+        <h2 className="text-xl font-bold mb-4">Create New Event</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium">
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={eventData.title}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-3xl dark:bg-black dark:text-white text-black bg-white border-2"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="date" className="block text-sm font-medium">
+                Date
+              </label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={eventData.date}
+                onChange={handleInputChange}
+                className="mt-1 block w-full  rounded-3xl dark:bg-black dark:text-white text-black bg-white border-2"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="time" className="block text-sm font-medium ">
+                Time
+              </label>
+              <input
+                type="time"
+                id="time"
+                name="time"
+                value={eventData.time}
+                onChange={handleInputChange}
+                className="mt-1 block w-full  rounded-3xl dark:bg-black dark:text-white text-black bg-white border-2"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="type" className="block text-sm font-medium ">
+                Type
+              </label>
+              <select
+                id="type"
+                name="type"
+                value={eventData.type}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-3xl dark:bg-black dark:text-white text-black bg-white border-2"
+                required
+              >
+                <option value="">Select type</option>
+                <option value="economic">Economic</option>
+                <option value="earnings">Earnings</option>
+                <option value="revenue">Revenue</option>
+                <option value="dividends">Dividends</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="impact" className="block text-sm font-medium">
+                Impact
+              </label>
+              <select
+                id="impact"
+                name="impact"
+                value={eventData.impact}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-3xl dark:bg-black dark:text-white text-black bg-white border-2"
+                required
+              >
+                <option value="">Select impact</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={eventData.description}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-3xl dark:bg-black dark:text-white text-black bg-white border-2"
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Save Event
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-    </main>
-    </div>
-    </div>
-  );
-};
+  )
+}
 
-export default TradeCalendar;
