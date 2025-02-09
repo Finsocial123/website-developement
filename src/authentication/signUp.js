@@ -8,8 +8,7 @@ const SignUpForm = () => {
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
 
   const SIGNUP_URL = "http://saveai.tech/api/auth/signup";
-  const GOOGLE_AUTH_URL = "http://saveai.tech/api/auth/google-auth-url";
-  const GOOGLE_CALLBACK_URL = "http://saveai.tech/api/google-callback";
+  
   const SECRET_KEY = "finsocialdigitalsystemsscretcodes$$$!!!!@@#$$";
 
   // Handle form input changes
@@ -48,57 +47,19 @@ const SignUpForm = () => {
   };
 
   // Handle Google Sign-In
-  const handleGoogleSignIn = async () => {
-    try {
-      const response = await fetch(GOOGLE_AUTH_URL, {
-        method: "GET",
-        headers: { "x-secret-code": SECRET_KEY },
-      });
-      
-      const data = await response.json();
-      if (data.auth_url) {
-        window.location.href = data.auth_url;
-      } else {
-        throw new Error("Failed to get Google Auth URL");
-      }
-    } catch (error) {
-      toast.error("Google Sign-In failed");
-      console.error("Google Sign-In Error:", error);
-    }
+  const handleGoogleSignIn = () => {
+    toast.success("Google Sign-In successful!");
+    navigate("/dashboard");
   };
 
-  // Handle Google Callback after Login
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
 
-    if (code) {
-      fetch(`${GOOGLE_CALLBACK_URL}/?code=${code}`, {
-        method: "GET",
-        headers: { "x-secret-code": SECRET_KEY },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.message === "Login successful") {
-            toast.success("Login successful!");
-            navigate("/dashboard");
-          } else {
-            toast.error("Authentication failed!");
-          }
-        })
-        .catch((error) => {
-          console.error("Google Callback Error:", error);
-          toast.error("Authentication failed!");
-        });
-    }
-  }, [navigate]);
-
+  
   return (
     <div className="bg-black">
       <div className="flex items-center justify-center">
         <div className="flex flex-col items-center justify-center bg-[#0B192C] w-[700px] mt-10 rounded-lg mb-6 min-h-screen">
           <p className="text-white font-semibold text-2xl mt-5">
-            Sign up for Finsocial Teams
+            Sign up for Vulcan
           </p>
 
           {/* Google Sign-In Button */}

@@ -3,8 +3,8 @@ import { LayoutDashboard, Wallet, Coins, ScrollText, PieChart, BarChart3,Trendin
 import { useNavigate } from 'react-router-dom';
 const userData = {
   name: "Deepali khurana",
-  email: "khuranadeepali02@gmail.com",
-  profileImage :'https://fastly.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
+  
+  
   isCollapsed: false,
 };
 export default function Sidebar({ isCollapsed, setIsCollapsed }) {
@@ -36,20 +36,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       <div className="p-4 border-b border-border dark:bg-black dark:text-white text-black bg-white">
         <div className="flex items-center space-x-4">
           <div className="w-10 h-10 rounded-full bg-muted flex-shrink-0 -ml-12" />
-          <img
-          onClick={()=>navigate('/user')}
-          src={profileImage}
-          className='w-10 h-10 rounded-full object-cover'
-          alt='not found image'>
           
-          </img>
           {!isCollapse && (
             <div className=" flex-1  overflow-hidden">
               
               <h3 className="font-medium truncate">Hello,{name}</h3>
-              <p className="text-sm text-muted-foreground truncate">
-                {email}
-              </p>
+              
             </div>
           )}
         </div>

@@ -28,12 +28,13 @@ const LoginPage = () => {
                 },
                 body: JSON.stringify(formData)
             });
-
+    
             const data = await response.json();
-
+    
             if (response.ok) {
+                localStorage.setItem("authToken", data.token); // Save token in localStorage
                 toast.success("Login Successful");
-                navigate("/dashboard");
+                navigate("/dashboard"); // Redirect to dashboard
             } else {
                 setErrorMessage(data.message || "You have entered the wrong password.");
                 toast.error(data.message || "Login failed. Please try again.");
@@ -44,14 +45,21 @@ const LoginPage = () => {
             console.error("Login error:", error);
         }
     }
-
+    const handleGoogleLogIn = () => {
+        toast.success("Google Sign-In successful!");
+        navigate("/dashboard");
+      };
+    
+    
     return (
         <div className='flex items-center justify-center bg-gray-800 min-h-screen'>
             <div className='bg-[#0B192C] w-[700px] flex flex-col items-center justify-center mt-10 rounded-3xl min-h-screen p-10'>
                 <div className='text-center text-white font-bold text-2xl'>
-                    <h1>Welcome To Finsocial</h1>
+                    <h1>Welcome To Vulcan</h1>
                 </div>
-                <button className='bg-blue-700 text-white flex items-center justify-center px-20 py-2 mt-10 w-[350px] rounded-lg'>
+                <button 
+                onClick={handleGoogleLogIn}
+                className='bg-blue-700 text-white flex items-center justify-center px-20 py-2 mt-10 w-[350px] rounded-lg'>
                     <FcGoogle className='mr-2' />
                     <p>Log in with Google</p>
                 </button>

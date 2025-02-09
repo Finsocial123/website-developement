@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Logout() {
+  localStorage.removeItem("authToken");
+    navigate("/");
+
   const [showPopup, setShowPopup] = useState(true);
   const navigate = useNavigate();
 

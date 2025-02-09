@@ -106,8 +106,8 @@ export default function Header({ onMenuClick }) {
           <Menu className="h-5 w-5" />
         </button>
         <div className="flex items-center">
-          <img src="./logo.png" alt="Logo" className="h-8 w-8" />
-          <span className="ml-2 font-bold text-xl dark:text-white text-black">Boltz</span>
+          
+          <span className="ml-2 font-bold text-xl dark:text-white text-black">Vulcan</span>
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
